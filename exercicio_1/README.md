@@ -27,11 +27,11 @@ Desenvolva um esquema de banco de dados relacional no PostgreSQL com as seguinte
 #### Endpoints e Verbos HTTP
 
 - **Clientes**
-  - `GET /clientes`: Lista todos os clientes.
-  - `POST /clientes`: Cria um novo cliente.
-  - `GET /clientes/{id}`: Detalhes do cliente.
-  - `PUT /clientes/{id}`: Atualiza cliente.
-  - `DELETE /clientes/{id}`: Exclui cliente.
+  - `GET /clientes`: Lista todos os clientes. OK  
+  - `POST /clientes`: Cria um novo cliente. OK
+  - `GET /clientes/{id}`: Detalhes do cliente. OK
+  - `PUT /clientes/{id}`: Atualiza cliente. OK
+  - `DELETE /clientes/{id}`: Exclui cliente. OK
 
 - **Produtos**
   - `GET /produtos`: Lista todos os produtos.
@@ -40,12 +40,12 @@ Desenvolva um esquema de banco de dados relacional no PostgreSQL com as seguinte
   - `PUT /produtos/{id}`: Atualiza produto.
   - `DELETE /produtos/{id}`: Exclui produto.
 
-- **Carrinho**
+- **Carrinho** `relacional`
   - `POST /carrinho`: Adiciona item ao carrinho.
   - `PUT /carrinho/{id}`: Atualiza item no carrinho.
   - `DELETE /carrinho/{id}`: Remove item do carrinho.
 
-- **Pedidos**
+- **Pedidos** `relacional`
   - `GET /pedidos`: Lista pedidos do cliente.
   - `POST /pedidos`: Cria novo pedido.
   - `GET /pedidos/{id}`: Detalhes do pedido.
