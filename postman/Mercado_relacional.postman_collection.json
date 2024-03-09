@@ -1,0 +1,18 @@
+{
+	"info": {
+		"_postman_id": "a0a71402-88b9-489f-9d5a-fe628e9c7473",
+		"name": "Mercado_relacional",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33082141"
+	},
+	"item": [
+		{
+			"name": "teste",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
