@@ -83,7 +83,7 @@ def consulta_cliente(id):
     
     except psycopg2.Error as e:
         conn.rollback()
-        return {"mensagem":str(e)}
+        return {"mensagem":str(e)}, 500
 
     finally:
         cur.close()
@@ -125,7 +125,7 @@ def atualiza_cliente(id):
     finally:
         cur.close()
     
-    return atualizado
+    return atualizado, 200
 
 @app.route('/clientes/<int:id>', methods=['DELETE'])
 def deleta_cliente(id):
@@ -148,6 +148,111 @@ def deleta_cliente(id):
     
     finally:
         cur.close()
+
+#Entidade produto
+        
+@app.route('/produtos', methods=['GET'])
+def lista_produtos():
+    cur = conn.cursor()
+
+    try:
+        cur.execute("SELECT * FROM produtos")
+        produtos = cur.fetchall()
+    except psycopg2.Error() as e:
+        cur.rollback()
+        return {"mensagem":str(e)}, 500
+    finally:
+        cur.close()
+    
+    lista_produtos = []
+
+    for produto in produtos:
+        lista_produtos.append(
+            {
+                "id":produto[0],
+                "nome":produto[1],
+                "descricao":produto[2],
+                "preco":produto[3],
+                "estoque":produto[4]
+            }
+        )
+
+    return lista_produtos, 200
+
+@app.route('/produtos', methods=['POST'])
+def registra_produto():
+    dic_produto = request.json
+    nome = dic_produto.get("nome",'')
+    descricao = dic_produto.get("descricao",'')
+    preco = dic_produto.get("preco", '')
+    estoque = dic_produto.get("estoque", '')
+
+    cur = conn.cursor()
+    try:
+        cur.execute("INSERT INTO produtos (nome, descricao, preco, estoque) VALUES(%s, %s, %s, %s)",
+                    (nome, descricao, preco, estoque))
+        conn.commit()
+    except psycopg2.Error as e:
+        cur.rollback()
+        return {"mensagem":str(e)}, 500
+    finally:
+        cur.close()
+    
+    resp = {"produto cadastrado": dic_produto}
+    return resp, 201
+
+@app.route('/produtos/<int:id>', methods=['GET'])
+def consulta_produto(id):
+    cur =  conn.cursor()
+
+    try:
+        cur.execute("SELECT * FROM produtos WHERE id =%s",(id,))
+        produto = cur.fetchone()
+        if produto is None:
+            return {"mensagem":"produto nao encontrado"}, 404
+        
+    except psycopg2.Error as e:
+        cur.rollback()
+        return {"mensagem": str(e)}, 500
+    
+    finally:
+        cur.close()
+    
+    dic_produto = {
+        "id":produto[0],
+        "nome":produto[1],
+        "descricao":produto[2],
+        "preco":produto[3],
+        "estoque":produto[4]
+    }
+
+    return dic_produto, 200
+
+@app.route('/produtos/<int:id>', methods=['PUT'])
+def atualiza_produto(id):
+    dic_produto = request.json
+    cur = conn.cursor()
+    atualizado = {"colunas atualizadas": []}
+
+    try:
+        cur.execute("SELECT * FROM produtos WHERE id = %s",(id,))
+        produto = cur.fetchone()
+        if produto is None:
+            return {"mensagem":"produto nao encontrado, nada foi alterado"}, 404
+        
+        for coluna in dic_produto:
+                if coluna != 'id':
+                    cur.execute(f'UPDATE produtos SET {coluna} = %s WHERE id = %s',(dic_produto[coluna],id))
+                    atualizado["colunas atualizadas"].append(coluna)
+        conn.commit()
+    except psycopg2.Error as e:
+        conn.rollback()
+        return {"mensagem":str(e)}, 500
+    
+    finally:
+        cur.close()
+    
+    return atualizado, 200
 
 if __name__ == '__main__':
     app.run(debug=True)

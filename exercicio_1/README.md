@@ -34,10 +34,10 @@ Desenvolva um esquema de banco de dados relacional no PostgreSQL com as seguinte
   - `DELETE /clientes/{id}`: Exclui cliente. OK
 
 - **Produtos**
-  - `GET /produtos`: Lista todos os produtos.
-  - `POST /produtos`: Cria novo produto.
-  - `GET /produtos/{id}`: Detalhes do produto.
-  - `PUT /produtos/{id}`: Atualiza produto.
+  - `GET /produtos`: Lista todos os produtos. OK
+  - `POST /produtos`: Cria novo produto. OK 
+  - `GET /produtos/{id}`: Detalhes do produto. OK
+  - `PUT /produtos/{id}`: Atualiza produto. OK
   - `DELETE /produtos/{id}`: Exclui produto.
 
 - **Carrinho** `relacional`
