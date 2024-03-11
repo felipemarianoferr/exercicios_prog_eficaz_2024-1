@@ -254,5 +254,154 @@ def atualiza_produto(id):
     
     return atualizado, 200
 
+@app.route('/produtos/<int:id>', methods=['DELETE'])
+def deleta_produto(id):
+    
+    cur = conn.cursor()
+
+    try:
+        cur.execute("SELECT nome FROM produtos WHERE id = %s",(id,))
+        nome_Produto = cur.fetchone()
+
+        if nome_Produto is None:
+            return {"mensagem":"prdotuo nao encontrado, nada foi deletado"}, 404
+        else:
+            cur.execute("DELETE from produtos WHERE id = %s",(id,))
+            conn.commit()
+            return {"mensagem":f"o produto {nome_Produto} foi deletado"}, 200
+    except psycopg2.Error as e:
+        conn.rollback()
+        return {"mensagem":str(e)}, 500
+    finally:
+        cur.close()
+
+#Entidade fornecedores
+
+@app.route('/fornecedores', methods=['GET'])
+def lista_fornecedores():
+    cur = conn.cursor()
+
+    try:
+        cur.execute("SELECT * FROM fornecedores")
+        fornecedores = cur.fetchall()
+    except psycopg2.Error as e:
+        conn.rollback()
+        return {"mensagem":str(e)}, 500
+    finally:
+        cur.close()
+    
+    lista_fornecedores = []
+    for fornecedor in fornecedores:
+        lista_fornecedores.append(
+            {
+                "id": fornecedor[0],
+                "nome": fornecedor[1],
+                "email": fornecedor[2],
+                "cnpj": fornecedor[3]
+            }
+        )
+
+    return lista_fornecedores, 200
+
+@app.route('/fornecedores',methods=["POST"])
+def registra_fornecedor():
+    dic_fornecedor = request.json
+    nome = dic_fornecedor.get("nome", '')
+    email = dic_fornecedor.get("email", None)
+    cnpj = dic_fornecedor.get("cnpj", None)
+
+    if not email or not cnpj:
+        return {"mensagem":"email e cnpj sao obrigatorios"}, 400
+    
+    cur = conn.cursor()
+    try:
+        cur.execute("INSERT INTO fornecedores (nome, email, cnpj) VALUES(%s, %s, %s)",
+                    (nome, email, cnpj))
+        conn.commit()
+    except psycopg2.Error as e:
+        conn.rollback()
+        return {"mensagem": str(e)}, 500
+    finally:
+        cur.close()
+
+    resp = {"fornecedor cadastrado":dic_fornecedor}
+
+    return resp, 201
+
+@app.route('/fornecedores/<int:id>', methods=["GET"])
+def consulta_fornecdor(id):
+    cur = conn.cursor()
+
+    try:
+        cur.execute("SELECT * FROM fornecedores WHERE id = %s", (id,))
+        fornecedor = cur.fetchone()
+        if fornecedor is None:
+            return {"mensagem": "fornecedor nao encontrado"}, 404
+    except psycopg2.Error as e:
+        conn.rollback()
+        return {"mensagem": str(e)}, 500
+    finally:
+        cur.close()
+
+    dic_fornecedor = {
+        "id":fornecedor[0],
+        "nome":fornecedor[1],
+        "email":fornecedor[2],
+        "cnpj":fornecedor[3]
+    }
+    return dic_fornecedor, 200
+
+@app.route('/fornecedores/<int:id>', methods=["PUT"])
+def atualiza_fornecedor(id):
+    dic_fornecedores = request.json
+    cur = conn.cursor()
+    atualizado = {"colunas atualizadas": []}
+
+    try:
+        cur.execute("SELECT * FROM fornecedores WHERE id = %s", (id,))
+        fornecedor = cur.fetchone()
+
+        if fornecedor is None:
+            return {"mensagem": "fornecedor nao encontrado, nada foi alterado"}, 404
+        
+        for coluna in dic_fornecedores:
+            if coluna != 'id':
+                cur.execute(f'UPDATE fornecedores SET {coluna} = %s WHERE id = %s',(dic_fornecedores[coluna], id))
+                atualizado['colunas atualizadas'].append(coluna)
+        conn.commit()
+
+    except psycopg2.Error as e:
+        conn.rollback()
+        return {"mensagem": str(e)}, 500
+    
+    finally:
+        cur.close()
+    
+    return atualizado, 200
+
+@app.route('/fornecedores/<int:id>', methods=['DELETE'])
+def deleta_fornecedores(id):
+    cur = conn.cursor()
+
+    try:
+        cur.execute("SELECT nome FROM fornecedores WHERE id = %s", (id,))
+        nome_fornecedor = cur.fetchone()
+
+        if nome_fornecedor is None:
+            return {"mensagem": "fornecedor nao foi encontrado, nada foi deletado"}, 404
+        else:
+            cur.execute("DELETE FROM fornecedores WHERE id = %s", (id,))
+            conn.commit()
+            return {"mensagem":f"o cliente {nome_fornecedor[0]} foi deletado"}, 200
+        
+    except psycopg2.Error as e:
+        conn.rollback()
+        return {"mensagem": str(e)}, 500
+    
+    finally:
+        cur.close()
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)

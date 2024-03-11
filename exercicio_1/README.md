@@ -20,7 +20,7 @@ Desenvolva um esquema de banco de dados relacional no PostgreSQL com as seguinte
 - **Fornecedores**: `id` (auto incremento), `nome`, `email` (único), `cnpj` (único).
 - **Estoque_Fornecedor**: `produto_id`, `fornecedor_id`, `quantidade`, `preco_custo`.
 - **Carrinho**: `id` (auto incremento), `cliente_id`, `produto_id`, `quantidade`.
-- **Pedido**: `id` (auto incremento), `cliente_id`, `data_hora`, `valor_total`, `status` (`pendente`, `aprovado`, `cancelado`, `entregue`).
+- **Pedido**: `id` (auto incremento), `cliente_id`, `data_hora`, `valor_total`, `status` (`pendente`, `aprovado`, `cancelado`, `entregue`). 
 
 ### Implementação da API RESTful
 
@@ -38,7 +38,14 @@ Desenvolva um esquema de banco de dados relacional no PostgreSQL com as seguinte
   - `POST /produtos`: Cria novo produto. OK 
   - `GET /produtos/{id}`: Detalhes do produto. OK
   - `PUT /produtos/{id}`: Atualiza produto. OK
-  - `DELETE /produtos/{id}`: Exclui produto.
+  - `DELETE /produtos/{id}`: Exclui produto. OK
+
+- **fornecedores**
+  - `GET /fornecedores`: Lista todos os fornecedores. OK
+  - `POST /fornecedores`: Cria novo fornecedores. OK
+  - `GET /fornecedores/{id}`: Detalhes do fornecedores. OK
+  - `PUT /fornecedores/{id}`: Atualiza fornecedores. OK
+  - `DELETE /fornecedores/{id}`: Exclui fornecedores. OK
 
 - **Carrinho** `relacional`
   - `POST /carrinho`: Adiciona item ao carrinho.
