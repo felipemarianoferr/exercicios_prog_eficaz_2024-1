@@ -48,14 +48,23 @@ Desenvolva um esquema de banco de dados relacional no PostgreSQL com as seguinte
   - `DELETE /fornecedores/{id}`: Exclui fornecedores. OK
 
 - **Carrinho** `relacional`
-  - `POST /carrinho`: Adiciona item ao carrinho.
-  - `PUT /carrinho/{id}`: Atualiza item no carrinho.
-  - `DELETE /carrinho/{id}`: Remove item do carrinho.
+  - `GET /carrinho`: Lista todos os carrinhos. OK
+  - `POST /carrinho`: Adiciona item ao carrinho. OK
+  - `PUT /carrinho/{id}`: Atualiza item no carrinho. OK
+  - `DELETE /carrinho/{id}`: Remove item do carrinho. OK
+  - `GET /carrinho/{id}`: Detalhes do carrinho. OK
 
 - **Pedidos** `relacional`
-  - `GET /pedidos`: Lista pedidos do cliente.
-  - `POST /pedidos`: Cria novo pedido.
-  - `GET /pedidos/{id}`: Detalhes do pedido.
+  - `GET /pedidos`: Lista pedidos do cliente. OK
+  - `POST /pedidos`: Cria novo pedido. OK
+  - `GET /pedidos/{id}`: Detalhes do pedido.OK
+  - `PUT /pedidos/{id}`: Atualiza item no pedido. OK
+  - `DELETE /pedidos/{id}`: Remove item do pedido. OK
+
+
+- **estoque do fornecedor** `relacional`
+  - `GET /estoque_fornecedor`: Lista todos os fornecedores. OK
+  - `POST /estoque_fornecedor`: Adiciona item ao fornecedor. OK
 
 - **Pense e crie o restante das especificações de rota dos recursos não listado acima**
 
