@@ -46,7 +46,9 @@ def lista_clientes():
 
 @app.route('/clientes', methods=['POST'])
 def registra_cliente():
+
     try:
+        cur = conn.cursor()
         dic_cliente = request.json
         nome = dic_cliente.get("nome", '')
         email = dic_cliente.get("email", None) #obrigatorio
@@ -55,7 +57,12 @@ def registra_cliente():
 
         if not email or not cpf:
             return {"mensagem": "email e cpf sao colunas obrigatorias."},400
-        cur = conn.cursor()
+        
+        cur.execute("SELECT * FROM clientes WHERE cpf = %s", (cpf,))
+        cliente_existente = cur.fetchone()
+        if cliente_existente:
+            return {"mensagem": "Cliente já existe."}, 400
+
         cur.execute("INSERT INTO clientes (nome, email, cpf, senha) VALUES(%s, %s,%s,%s)",
                     (nome, email, cpf, senha))
         conn.commit()
@@ -66,6 +73,8 @@ def registra_cliente():
     except Exception as e:
         conn.rollback()
         return{"mensagem":str(e)}, 500
+    finally:
+        cur.close()
 
 @app.route('/clientes/<int:id>', methods=['GET'])
 def consulta_cliente(id):
@@ -178,19 +187,28 @@ def lista_produtos():
 
 @app.route('/produtos', methods=['POST'])
 def registra_produto():
-    dic_produto = request.json
-    nome = dic_produto.get("nome",'')
-    descricao = dic_produto.get("descricao",'')
-    preco = dic_produto.get("preco", '')
-    estoque = dic_produto.get("estoque", '')
-
-    cur = conn.cursor()
     try:
+        cur = conn.cursor()
+        dic_produto = request.json
+        nome = dic_produto.get("nome",None)
+        descricao = dic_produto.get("descricao",'')
+        preco = dic_produto.get("preco", None)
+        estoque = dic_produto.get("estoque", None)
+
+        if not nome or not preco or not estoque:
+            return {"mensagem":"campos obrigatorios!"}, 400
+        
+        cur.execute('SELECT * FROM produtos WHERE nome = %s', (nome,))
+        produto = cur.fetchone()
+        if produto:
+            return {"mensagem":"Produto ja existe"}, 400
+        
         cur.execute("INSERT INTO produtos (nome, descricao, preco, estoque) VALUES(%s, %s, %s, %s)",
                     (nome, descricao, preco, estoque))
         conn.commit()
+
     except psycopg2.Error as e:
-        cur.rollback()
+        conn.rollback()
         return {"mensagem":str(e)}, 500
     finally:
         cur.close()
